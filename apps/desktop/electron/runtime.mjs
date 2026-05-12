@@ -31,6 +31,22 @@ function normalizeWorkspaceKey(value) {
   return path.resolve(trimmed).replace(/\\/g, "/").toLowerCase();
 }
 
+function isFilesystemRoot(value) {
+  const resolved = path.resolve(String(value ?? "").trim());
+  return resolved === path.parse(resolved).root;
+}
+
+function assertProjectDirectory(value) {
+  const projectDir = String(value ?? "").trim();
+  if (!projectDir) {
+    throw new Error("projectDir is required");
+  }
+  if (isFilesystemRoot(projectDir)) {
+    throw new Error("Choose a project folder, not the root of a drive.");
+  }
+  return projectDir;
+}
+
 function nowMs() {
   return Date.now();
 }
@@ -1266,10 +1282,7 @@ export function createRuntimeManager({ app, desktopRoot, listLocalWorkspacePaths
   }
 
   async function engineStart(projectDir, options = {}) {
-    const safeProjectDir = String(projectDir ?? "").trim();
-    if (!safeProjectDir) {
-      throw new Error("projectDir is required");
-    }
+    const safeProjectDir = assertProjectDirectory(projectDir);
     await mkdir(safeProjectDir, { recursive: true });
     await ensureOpencodeConfig(safeProjectDir);
     await prepareFreshRuntime();

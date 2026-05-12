@@ -822,6 +822,22 @@ function normalizeWorkspacePathKey(value) {
   return trimmed ? path.resolve(trimmed).replace(/\\/g, "/").toLowerCase() : "";
 }
 
+function isFilesystemRoot(value) {
+  const resolved = path.resolve(String(value ?? "").trim());
+  return resolved === path.parse(resolved).root;
+}
+
+function assertLocalWorkspacePath(value) {
+  const workspacePath = String(value ?? "").trim();
+  if (!workspacePath) {
+    throw new Error("Workspace path is required.");
+  }
+  if (isFilesystemRoot(workspacePath)) {
+    throw new Error("Choose a project folder, not the root of a drive.");
+  }
+  return workspacePath;
+}
+
 function stableWorkspaceId(value) {
   return `ws_${createHash("sha256").update(String(value)).digest("hex").slice(0, 12)}`;
 }
@@ -1467,6 +1483,7 @@ async function handleDesktopInvoke(event, command, ...args) {
       const rawFolderPath = String(input.folderPath ?? "").trim();
       if (!rawFolderPath) throw new Error("folderPath is required");
       const folderPath = await normalizeLocalWorkspacePath(rawFolderPath);
+      assertLocalWorkspacePath(folderPath);
       await mkdir(folderPath, { recursive: true });
       const preset = String(input.preset ?? "starter");
       const workspace = normalizeWorkspaceEntry({

@@ -1,5 +1,12 @@
 {
-  "messaging": {
-    "enabled": true
-  }
+  "version": 1,
+  "workspace": {
+    "name": "matrix",
+    "createdAt": 1778614532184,
+    "preset": "starter"
+  },
+  "authorizedRoots": [
+    "C:\\matrix"
+  ],
+  "reload": null
 }
