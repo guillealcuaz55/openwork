@@ -20,6 +20,7 @@ flowchart TD
   TOOLS --> C["Calendar"]
   TOOLS --> CRM["CRM / ERP / Helpdesk / Sheets"]
   TOOLS --> CHAT["Slack / Teams / WhatsApp"]
+  TOOLS --> WEB["Webapps / SaaS"]
   MCP --> AG["Agentes especializados"]
   AG --> RQ["Review queue"]
   RQ --> H["Humano aprueba"]
